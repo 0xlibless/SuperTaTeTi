@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
-import WinnerText from './wintext';
+import TurnIndicator from './turnindicator';
 const { width: SCREEN_W } = Dimensions.get('window');
 const BOARD_SIZE = Math.min(SCREEN_W - 24, 420);
 
@@ -137,16 +137,10 @@ export default function Board({ navigate }) {
     const [gameWinner, setGameWinner]   = useState(null);
     const [winLine, setWinLine]         = useState(null);
 
-    const pill1Anim  = useRef(new Animated.Value(0)).current;
-    const pill2Anim  = useRef(new Animated.Value(0)).current;
-    const boardAnim  = useRef(new Animated.Value(0)).current;
+    const boardAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        Animated.stagger(80, [
-            Animated.spring(pill1Anim, { toValue: 1, friction: 5, tension: 90, useNativeDriver: true }),
-            Animated.spring(pill2Anim, { toValue: 1, friction: 5, tension: 90, useNativeDriver: true }),
-            Animated.spring(boardAnim, { toValue: 1, friction: 6, tension: 70, useNativeDriver: true }),
-        ]).start();
+        Animated.spring(boardAnim, { toValue: 1, friction: 6, tension: 70, useNativeDriver: true }).start();
     }, []);
 
     function handlePress(bigIdx, smallIdx) {
@@ -196,34 +190,7 @@ export default function Board({ navigate }) {
                     <Entypo name="chevron-left" size={28} color="#7070aa" />
                 </TouchableOpacity>
                 <View style={styles.turnRow}>
-                    {gameWinner ? (
-                        <WinnerText winner={gameWinner} />
-                    ) : (
-                        [pill1Anim, pill2Anim].map((anim, i) => {
-                            const p = i === 0 ? 'X' : 'O';
-                            const isActive = p === currentPlayer;
-                            const pColor   = p === 'X' ? '#6c47ff' : '#ff4f7b';
-                            return (
-                                <Animated.View
-                                    key={p}
-                                    style={[
-                                        styles.playerPill,
-                                        isActive
-                                            ? { borderColor: pColor, backgroundColor: `${pColor}28` }
-                                            : styles.playerPillInactive,
-                                        {
-                                            opacity: anim,
-                                            transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }],
-                                        },
-                                    ]}
-                                >
-                                    <Text style={[styles.playerPillText, styles.symbol, { color: isActive ? pColor : '#3d3d5c' }]}>
-                                        {p}
-                                    </Text>
-                                </Animated.View>
-                            );
-                        })
-                    )}
+                    <TurnIndicator currentPlayer={currentPlayer} gameWinner={gameWinner} />
                 </View>
                 <View style={styles.backBtnPlaceholder} />
             </View>
@@ -365,23 +332,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 16,
     },
-    playerPill: {
-        width: 56,
-        height: 56,
-        borderRadius: 14,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: 'transparent',
-    },
-    playerPillInactive: {
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    },
-    playerPillText: {
-        fontSize: 34,
-        lineHeight: 38,
-    },
-
     bigRow: {
         flex: 1,
         flexDirection: 'row',
