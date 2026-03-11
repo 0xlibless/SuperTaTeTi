@@ -4,7 +4,7 @@ import { Entypo } from '@expo/vector-icons';
 import Popup from '../components/popup';
 import { useFonts, Bangers_400Regular } from '@expo-google-fonts/bangers';
 import { Fredoka_700Bold } from '@expo-google-fonts/fredoka';
-import Loading from './loading';
+import Loading from '../components/loading';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const SYMBOLS = ['X', 'O'];
@@ -109,12 +109,12 @@ export default function Menu() {
             <Text style={styles.subtitle}>El Tic-Tac-Toe definitivo</Text>
 
             <View style={styles.buttons}>
-                <TouchableOpacity style={styles.btnPrimary} onPress={() => { }}>
-                    <Text style={styles.btnPrimaryText}>Jugar</Text>
+                <TouchableOpacity style={styles.btnPlay} onPress={() => { }}>
+                    <Text style={styles.btnPlayText}>Jugador VS Jugador</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.btnSecondary} onPress={() => { }}>
-                    <Text style={styles.btnSecondaryText}>Multijugador</Text>
+                <TouchableOpacity style={styles.btnPlay} onPress={() => { }}>
+                    <Text style={styles.btnPlayText}>Multijugador</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.btnDebug} onPress={() => setShowLoading(true)}>
@@ -156,28 +156,14 @@ const styles = StyleSheet.create({
         width: '70%',
         gap: 16,
     },
-    btnPrimary: {
+    btnPlay: {
         backgroundColor: '#6c47ff',
         paddingVertical: 16,
         borderRadius: 12,
         alignItems: 'center',
     },
-    btnPrimaryText: {
+    btnPlayText: {
         color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-        letterSpacing: 1,
-    },
-    btnSecondary: {
-        backgroundColor: 'transparent',
-        paddingVertical: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#6c47ff',
-    },
-    btnSecondaryText: {
-        color: '#6c47ff',
         fontSize: 18,
         fontWeight: 'bold',
         letterSpacing: 1,
