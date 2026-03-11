@@ -15,8 +15,8 @@ export default function App() {
   return (
     <>
       {screen === 'menu' && <Menu navigate={setScreen} />}
-      {screen === 'game' && <Game />}
-      {screen === 'multiplayer' && <Multiplayer />}
+      {screen === 'game' && <Game navigate={setScreen} />}
+      {screen === 'multiplayer' && <Multiplayer navigate={setScreen} />}
       <StatusBar style="light" />
     </>
   );

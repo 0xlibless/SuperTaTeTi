@@ -1,6 +1,4 @@
 import { View, Text, StyleSheet, Animated, Easing, Dimensions } from 'react-native';
-import { useFonts, Bangers_400Regular } from '@expo-google-fonts/bangers';
-import { Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 import { useEffect, useRef } from 'react';
 
 const { width: W, height: H } = Dimensions.get('window');
@@ -8,7 +6,6 @@ const LINE_WIDTH = W * 0.65;
 const CIRCLE_SIZE = Math.sqrt(W * W + H * H) * 2;
 
 export default function Loading({ onDone }) {
-    const [fontsLoaded] = useFonts({ Bangers_400Regular, Fredoka_700Bold });
 
     const circleScale = useRef(new Animated.Value(0)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -20,7 +17,6 @@ export default function Loading({ onDone }) {
     const lineW = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        if (!fontsLoaded) return;
 
         Animated.timing(circleScale, {
             toValue: 1,
@@ -65,9 +61,7 @@ export default function Loading({ onDone }) {
                 });
             });
         });
-    }, [fontsLoaded]);
-
-    if (!fontsLoaded) return null;
+    }, []);
 
     return (
         <View style={styles.container}>

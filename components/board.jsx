@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
 import WinnerText from './wintext';
 const { width: SCREEN_W } = Dimensions.get('window');
 const BOARD_SIZE = Math.min(SCREEN_W - 24, 420);
@@ -128,7 +129,7 @@ function WinLine({ lineIdx, color }) {
 const mkCells = () => Array(9).fill(null).map(() => Array(9).fill(null));
 const mkBig   = () => Array(9).fill(null);
 
-export default function Board() {
+export default function Board({ navigate }) {
     const [cells, setCells]             = useState(mkCells);
     const [bigWinners, setBigWinners]   = useState(mkBig);
     const [activeBoard, setActiveBoard] = useState(null);
@@ -190,35 +191,41 @@ export default function Board() {
 
     return (
         <View style={styles.wrapper}>
-            <View style={styles.turnRow}>
-                {gameWinner ? (
-                    <WinnerText winner={gameWinner} />
-                ) : (
-                    [pill1Anim, pill2Anim].map((anim, i) => {
-                        const p = i === 0 ? 'X' : 'O';
-                        const isActive = p === currentPlayer;
-                        const pColor   = p === 'X' ? '#6c47ff' : '#ff4f7b';
-                        return (
-                            <Animated.View
-                                key={p}
-                                style={[
-                                    styles.playerPill,
-                                    isActive
-                                        ? { borderColor: pColor, backgroundColor: `${pColor}28` }
-                                        : styles.playerPillInactive,
-                                    {
-                                        opacity: anim,
-                                        transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }],
-                                    },
-                                ]}
-                            >
-                                <Text style={[styles.playerPillText, styles.symbol, { color: isActive ? pColor : '#3d3d5c' }]}>
-                                    {p}
-                                </Text>
-                            </Animated.View>
-                        );
-                    })
-                )}
+            <View style={styles.topRow}>
+                <TouchableOpacity style={styles.backBtn} onPress={() => navigate?.('menu')}>
+                    <Entypo name="chevron-left" size={28} color="#7070aa" />
+                </TouchableOpacity>
+                <View style={styles.turnRow}>
+                    {gameWinner ? (
+                        <WinnerText winner={gameWinner} />
+                    ) : (
+                        [pill1Anim, pill2Anim].map((anim, i) => {
+                            const p = i === 0 ? 'X' : 'O';
+                            const isActive = p === currentPlayer;
+                            const pColor   = p === 'X' ? '#6c47ff' : '#ff4f7b';
+                            return (
+                                <Animated.View
+                                    key={p}
+                                    style={[
+                                        styles.playerPill,
+                                        isActive
+                                            ? { borderColor: pColor, backgroundColor: `${pColor}28` }
+                                            : styles.playerPillInactive,
+                                        {
+                                            opacity: anim,
+                                            transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }],
+                                        },
+                                    ]}
+                                >
+                                    <Text style={[styles.playerPillText, styles.symbol, { color: isActive ? pColor : '#3d3d5c' }]}>
+                                        {p}
+                                    </Text>
+                                </Animated.View>
+                            );
+                        })
+                    )}
+                </View>
+                <View style={styles.backBtnPlaceholder} />
             </View>
 
             <Animated.View style={[
@@ -318,7 +325,7 @@ export default function Board() {
             </Animated.View>
 
             {gameWinner && (
-                <TouchableOpacity style={styles.resetBtn} onPress={reset}>
+                <TouchableOpacity style={styles.bttns} onPress={reset}>
                     <Text style={styles.resetText}>Jugar de nuevo</Text>
                 </TouchableOpacity>
             )}
@@ -335,16 +342,32 @@ const styles = StyleSheet.create({
         gap: 20,
     },
 
+    topRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: BOARD_SIZE,
+        marginBottom: 4,
+    },
+    backBtn: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
+        backgroundColor: 'rgba(255,255,255,0.05)',
+    },
+    backBtnPlaceholder: {
+        width: 40,
+    },
     turnRow: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 16,
-        marginBottom: 4,
     },
     playerPill: {
         width: 56,
         height: 56,
-        top: -40,
         borderRadius: 14,
         alignItems: 'center',
         justifyContent: 'center',
@@ -439,7 +462,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
     },
-    resetBtn: {
+    bttns: {
         backgroundColor: '#6c47ff',
         paddingHorizontal: 28,
         paddingVertical: 14,
