@@ -72,15 +72,21 @@ function Particle() {
     );
 }
 
-export default function Menu() {
+export default function Menu({ navigate }) {
     const particles = useRef(
         Array.from({ length: PARTICLE_COUNT }, (_, i) => i)
     ).current;
     const popupRef = useRef(null);
     const [fontsLoaded] = useFonts({ Bangers_400Regular, Fredoka_700Bold });
     const [showLoading, setShowLoading] = useState(false);
+    const destination = useRef(null);
 
-    if (showLoading) return <Loading onDone={() => setShowLoading(false)} />;
+    const goTo = (screen) => {
+        destination.current = screen;
+        setShowLoading(true);
+    };
+
+    if (showLoading) return <Loading onDone={() => navigate(destination.current)} />;
 
     return (
         <View style={styles.container}>
@@ -109,16 +115,12 @@ export default function Menu() {
             <Text style={styles.subtitle}>El Tic-Tac-Toe definitivo</Text>
 
             <View style={styles.buttons}>
-                <TouchableOpacity style={styles.btnPlay} onPress={() => { }}>
+                <TouchableOpacity style={styles.btnPlay} onPress={() => goTo('game')}>
                     <Text style={styles.btnPlayText}>Jugador VS Jugador</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.btnPlay} onPress={() => { }}>
+                <TouchableOpacity style={styles.btnPlay} onPress={() => goTo('multiplayer')}>
                     <Text style={styles.btnPlayText}>Multijugador</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.btnDebug} onPress={() => setShowLoading(true)}>
-                    <Text style={styles.btnDebugText}>[ DEBUG: Loading ]</Text>
                 </TouchableOpacity>
             </View>
         </View>
