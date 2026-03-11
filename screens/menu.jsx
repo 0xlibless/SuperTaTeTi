@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import Popup from '../components/popup';
 import { useFonts, Bangers_400Regular } from '@expo-google-fonts/bangers';
+import { Fredoka_700Bold } from '@expo-google-fonts/fredoka';
+import Loading from './loading';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const SYMBOLS = ['X', 'O'];
@@ -16,7 +18,7 @@ function Particle() {
     const symbol = SYMBOLS[Math.floor(Math.random() * 2)];
     const size = randomBetween(40, 100);
     const startX = randomBetween(0, SCREEN_W);
-    const duration = randomBetween(6000, 14000);
+    const duration = randomBetween(12000, 16000);
     const delay = randomBetween(0, 8000);
     const opacity = randomBetween(0.06, 0.22);
     const rotate = randomBetween(-60, 60);
@@ -59,7 +61,7 @@ function Particle() {
                 position: 'absolute',
                 left: startX,
                 fontSize: size,
-                fontWeight: 'bold',
+                fontFamily: 'Fredoka_700Bold',
                 color: symbol === 'X' ? '#6c47ff' : '#ffffff',
                 opacity,
                 transform: [{ translateY }, { rotate: spinInterpolated }],
@@ -75,7 +77,10 @@ export default function Menu() {
         Array.from({ length: PARTICLE_COUNT }, (_, i) => i)
     ).current;
     const popupRef = useRef(null);
-    const [fontsLoaded] = useFonts({ Bangers_400Regular });
+    const [fontsLoaded] = useFonts({ Bangers_400Regular, Fredoka_700Bold });
+    const [showLoading, setShowLoading] = useState(false);
+
+    if (showLoading) return <Loading onDone={() => setShowLoading(false)} />;
 
     return (
         <View style={styles.container}>
@@ -111,6 +116,10 @@ export default function Menu() {
                 <TouchableOpacity style={styles.btnSecondary} onPress={() => { }}>
                     <Text style={styles.btnSecondaryText}>Multijugador</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.btnDebug} onPress={() => setShowLoading(true)}>
+                    <Text style={styles.btnDebugText}>[ DEBUG: Loading ]</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -128,7 +137,6 @@ const styles = StyleSheet.create({
         fontSize: 52,
         fontFamily: 'Bangers_400Regular',
         color: '#ffffff',
-        marginRight: -8,
         right: -5,
         letterSpacing: 4,
         paddingRight: 4,
@@ -172,6 +180,19 @@ const styles = StyleSheet.create({
         color: '#6c47ff',
         fontSize: 18,
         fontWeight: 'bold',
+        letterSpacing: 1,
+    },
+    btnDebug: {
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#444',
+        borderRadius: 8,
+        borderStyle: 'dashed',
+    },
+    btnDebugText: {
+        color: '#555',
+        fontSize: 12,
         letterSpacing: 1,
     },
     helpbtn: {
