@@ -12,7 +12,7 @@ const UpdateChecker = () => {
     const [latestVersion, setLatestVersion] = useState(null);
 
     useEffect(() => {
-        fetch('https://api.github.com/repos/AguuZzz/SuperTaTeTi/releases/latest')
+        fetch('https://api.github.com/repos/0xlibless/SuperTaTeTi/releases/latest')
             .then(res => res.json())
             .then(data => {
                 const remoteVersion = data.tag_name || data.name;
@@ -35,7 +35,7 @@ const UpdateChecker = () => {
             confirmText="Actualizar"
             onConfirmPressed={() => {
                 setShowAlert(false);
-                Linking.openURL('https://github.com/AguuZzz/SuperTaTeTi/releases/latest');
+                Linking.openURL('https://github.com/0xlibless/SuperTaTeTi/releases/latest');
             }}
             onCancelPressed={() => setShowAlert(false)}
             onClose={() => setShowAlert(false)}
