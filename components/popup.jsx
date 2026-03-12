@@ -2,30 +2,85 @@
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Popup = forwardRef(({ message }, ref) => {
+const Popup = forwardRef(({
+    show,
+    title = '¿Cómo se juega?',
+    message,
+    onClose,
+    showConfirmButton = false,
+    confirmText = 'Aceptar',
+    confirmButtonColor = '#6c47ff',
+    onConfirmPressed,
+    cancelText = 'Cancelar',
+    showCancelButton = false,
+    onCancelPressed,
+    contentContainerStyle,
+    titleStyle,
+    messageStyle,
+    closeBtn = true,
+}, ref) => {
     const [visible, setVisible] = useState(false);
+    const isVisible = show ?? visible;
+
+    function hide() {
+        if (show === undefined) {
+            setVisible(false);
+        }
+        onClose?.();
+    }
 
     useImperativeHandle(ref, () => ({
         show() {
             if (!visible){
                 setVisible(true);
             }
+        },
+        hide() {
+            setVisible(false);
         }
     }));
 
-    if (!visible) return null;
+    if (!isVisible) return null;
 
     return (
         <View style={styles.overlay} pointerEvents="box-none">
-            <View style={styles.card}>
+            <View style={[styles.card, contentContainerStyle]}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>¿Cómo se juega?</Text>
-                    <TouchableOpacity onPress={() => setVisible(false)} style={styles.closeBtn}>
-                        <Text style={styles.closeText}>✕</Text>
-                    </TouchableOpacity>
+                    <Text style={[styles.title, titleStyle]}>{title}</Text>
+                    {closeBtn && (
+                        <TouchableOpacity onPress={hide} style={styles.closeBtn}>
+                            <Text style={styles.closeText}>✕</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
                 <View style={styles.divider} />
-                <Text style={styles.message}>{message}</Text>
+                <Text style={[styles.message, messageStyle]}>{message}</Text>
+                {(showConfirmButton || showCancelButton) && (
+                    <View style={styles.actions}>
+                        {showCancelButton && (
+                            <TouchableOpacity
+                                style={[styles.actionBtn, styles.cancelBtn]}
+                                onPress={() => {
+                                    hide();
+                                    onCancelPressed?.();
+                                }}
+                            >
+                                <Text style={styles.cancelText}>{cancelText}</Text>
+                            </TouchableOpacity>
+                        )}
+                        {showConfirmButton && (
+                            <TouchableOpacity
+                                style={[styles.actionBtn, { backgroundColor: confirmButtonColor }]}
+                                onPress={() => {
+                                    onConfirmPressed?.();
+                                    if (!onConfirmPressed) hide();
+                                }}
+                            >
+                                <Text style={styles.confirmText}>{confirmText}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -91,6 +146,34 @@ const styles = StyleSheet.create({
         color: '#cccccc',
         fontSize: 15,
         lineHeight: 24,
+    },
+    actions: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 12,
+        marginTop: 24,
+    },
+    actionBtn: {
+        borderRadius: 12,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
+        minWidth: 110,
+        alignItems: 'center',
+    },
+    cancelBtn: {
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        borderWidth: 1,
+        borderColor: '#6c47ff55',
+    },
+    cancelText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    confirmText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: '700',
     },
 });
 

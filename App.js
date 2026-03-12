@@ -6,6 +6,7 @@ import Menu from './screens/menu';
 import Game from './screens/game';
 import Lobby from './screens/lobby';
 import Multiplayer from './screens/multiplayer';
+import UpdateChecker from './hooks/updatechecker';
 
 export default function App() {
   const [screen, setScreen] = useState('menu');
@@ -27,6 +28,7 @@ export default function App() {
       {screen === 'multiplayer' && (
         <Multiplayer navigate={navigate} roomId={screenParams.roomId} myRole={screenParams.myRole} />
       )}
+      <UpdateChecker />
       <StatusBar style="light" />
     </>
   );
