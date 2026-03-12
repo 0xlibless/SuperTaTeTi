@@ -18,6 +18,16 @@ const WIN_LINES = [
 const mkCells  = () => Array(9).fill(null).map(() => Array(9).fill(null));
 const mkBig    = () => Array(9).fill(null);
 
+function normalizeRow(row) {
+    if (!Array.isArray(row)) return Array(9).fill(null);
+    return Array.from({ length: 9 }, (_, idx) => (row[idx] ?? null));
+}
+
+function normalizeCells(cells) {
+    if (!Array.isArray(cells)) return mkCells();
+    return Array.from({ length: 9 }, (_, idx) => normalizeRow(cells[idx]));
+}
+
 export const INITIAL_GAME = {
     cells:         mkCells(),
     bigWinners:    mkBig(),
@@ -103,14 +113,16 @@ export default function MultiplayerBoard({ roomId, myRole, gameState, onLeave })
     }, []);
 
     async function handlePress(bigIdx, smallIdx) {
+        if (bigIdx < 0 || bigIdx > 8 || smallIdx < 0 || smallIdx > 8) return;
+        const safeCells = normalizeCells(cells);
         if (gameWinner) return;
         if (bigWinners[bigIdx]) return;
         const activeBoardNorm = activeBoard === -1 ? null : activeBoard;
         if (activeBoardNorm !== null && activeBoardNorm !== bigIdx) return;
-        if (cells[bigIdx][smallIdx]) return;
+        if (safeCells[bigIdx][smallIdx]) return;
         if (currentPlayer !== myRole) return;
 
-        const newCells = cells.map((row, i) =>
+        const newCells = safeCells.map((row, i) =>
             i === bigIdx ? row.map((v, j) => (j === smallIdx ? currentPlayer : v)) : row
         );
         const newBig = [...bigWinners];
@@ -189,7 +201,8 @@ export default function MultiplayerBoard({ roomId, myRole, gameState, onLeave })
                                             <View key={smallRow} style={styles.smallRow}>
                                                 {[0, 1, 2].map(smallCol => {
                                                     const smallIdx = smallRow * 3 + smallCol;
-                                                    const val      = cells[bigIdx][smallIdx];
+                                                    const boardRow = normalizeRow(cells[bigIdx]);
+                                                    const val      = boardRow[smallIdx];
                                                     const canPlay  = isMyTurn && !bigW && !val && (activeBoardNorm === null || activeBoardNorm === bigIdx);
                                                     return (
                                                         <TouchableOpacity
