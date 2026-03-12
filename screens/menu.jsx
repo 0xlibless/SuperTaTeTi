@@ -8,7 +8,7 @@ import Loading from '../components/loading';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const SYMBOLS = ['X', 'O'];
-const PARTICLE_COUNT = 22;
+const PARTICLE_COUNT = 10;
 
 function randomBetween(a, b) {
     return a + Math.random() * (b - a);
@@ -18,7 +18,7 @@ function Particle() {
     const symbol = SYMBOLS[Math.floor(Math.random() * 2)];
     const size = randomBetween(40, 100);
     const startX = randomBetween(0, SCREEN_W);
-    const duration = randomBetween(12000, 16000);
+    const duration = randomBetween(10000, 19000);
     const delay = randomBetween(0, 8000);
     const opacity = randomBetween(0.06, 0.22);
     const rotate = randomBetween(-60, 60);
@@ -119,7 +119,7 @@ export default function Menu({ navigate }) {
                     <Text style={styles.btnPlayText}>Jugador VS Jugador</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.btnPlay} onPress={() => goTo('multiplayer')}>
+                <TouchableOpacity style={styles.btnPlay} onPress={() => navigate('lobby')}>
                     <Text style={styles.btnPlayText}>Multijugador</Text>
                 </TouchableOpacity>
             </View>

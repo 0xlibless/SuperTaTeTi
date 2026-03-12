@@ -28,9 +28,10 @@ yarn-error.*
 
 # macOS
 .DS_Store
-*.pem
 
-# local env files
+# env / Firebase config (no subir claves de servidor)
+.env
+*.pem
 .env*.local
 
 .env 
@@ -41,3 +42,5 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+*.apk
